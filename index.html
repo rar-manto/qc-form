@@ -469,7 +469,7 @@
                     dataToSend.append('USER_LOGIN', loggedInUser ? loggedInUser.name : 'Unknown');
                     
                     // Send to Google Sheets
-                    await fetch('https://script.google.com/macros/s/AKfycbytAVmfRiqQLwQ8millcTy-UwnnOKnGDemONM6KDD5TqZ16J81Y-Ih3vf53yuZevxro/exec', {
+                    await fetch('https://script.google.com/macros/s/AKfycbwn546Wcan018gxX-8ZJT2VU-_RnNTe5s4xjsyNeOdF9z2X8nkXuWqJfKlwz7TNMgx9/exec', {
                         method: 'POST',
                         mode: 'no-cors',
                         headers: {
@@ -490,18 +490,22 @@
                 }
                 
                 // Add current totals to daily summary
-                const totalIbc = parseInt(document.getElementById('totalIbc').value) || 0;
-                const totalDrum = parseInt(document.getElementById('totalDrum').value) || 0;
-                const totalJerigen = parseInt(document.getElementById('totalJerigen').value) || 0;
-                const totalZak = parseInt(document.getElementById('totalZak').value) || 0;
-                
-                summary.IBC = (summary.IBC || 0) + totalIbc;
-                summary.DRUM = (summary.DRUM || 0) + totalDrum;
-                summary.JERIGEN = (summary.JERIGEN || 0) + totalJerigen;
-                summary.ZAK = (summary.ZAK || 0) + totalZak;
-                
-                localStorage.setItem('dailySummary', JSON.stringify(summary));
-                updateDailySummary();
+                async function updateDailySummary() {
+                try {
+                    const response = await fetch("https://script.google.com/macros/s/AKfycbwn546Wcan018gxX-8ZJT2VU-_RnNTe5s4xjsyNeOdF9z2X8nkXuWqJfKlwz7TNMgx9/exec");
+                    const summary = await response.json();
+
+                    document.getElementById('ibcCount').textContent = summary.IBC || 0;
+                    document.getElementById('drumCount').textContent = summary.DRUM || 0;
+                    document.getElementById('jerigenCount').textContent = summary.JERIGEN || 0;
+                    document.getElementById('zakCount').textContent = summary.ZAK || 0;
+                } catch (error) {
+                    console.error("Gagal ambil rekap harian:", error);
+                }
+            }
+
+// Panggil saat halaman load
+updateDailySummary();
                 
                 // Reset form
                 this.reset();
@@ -561,5 +565,6 @@
     </script>
 <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'97826ed91654f8c4',t:'MTc1NjcwNTIyOC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
+
 
 
