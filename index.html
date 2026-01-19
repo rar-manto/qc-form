@@ -1,127 +1,146 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Form QC</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          colors: {
-            primary: '#FF8C00'
-          }
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Form QC - CV. Kurnia Jaya</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+tailwind.config = {
+  theme: {
+    extend: {
+      colors: {
+        'orange-primary': '#FF8C00',
+        'orange-secondary': '#FFA500'
       }
     }
-  </script>
+  }
+}
+</script>
 </head>
-<body class="bg-gray-100 min-h-screen">
+
+<body class="bg-gray-50 min-h-screen py-8">
 
 <!-- LOGIN -->
-<div id="loginScreen" class="flex items-center justify-center min-h-screen">
-  <div class="bg-white p-6 rounded shadow w-80">
-    <h2 class="text-xl font-bold text-center mb-4">Login</h2>
-    <form id="loginForm" class="space-y-3">
-      <input id="username" class="w-full border p-2" placeholder="Username" />
-      <input id="password" type="password" class="w-full border p-2" placeholder="Password" />
-      <p id="loginError" class="text-red-500 hidden">Login gagal</p>
-      <button class="w-full bg-primary text-white py-2">Masuk</button>
+<div id="loginScreen" class="min-h-screen flex items-center justify-center px-4">
+  <div class="max-w-md w-full bg-white rounded-lg shadow-lg p-8">
+    <div class="text-center mb-6">
+      <h1 class="text-2xl font-bold">CV. Kurnia Jaya</h1>
+      <p>Quality Control System</p>
+    </div>
+
+    <form id="loginForm" class="space-y-4">
+      <input id="username" placeholder="Username" class="w-full p-3 border rounded">
+      <input id="password" type="password" placeholder="Password" class="w-full p-3 border rounded">
+      <button class="w-full bg-orange-primary text-white py-3 rounded">Login</button>
+      <div id="loginError" class="text-red-500 text-sm hidden">Login gagal</div>
     </form>
   </div>
 </div>
 
-<!-- APP -->
-<div id="mainApp" class="hidden p-6 max-w-4xl mx-auto">
-  <div class="flex justify-between items-center mb-4">
-    <h1 class="text-2xl font-bold">Form QC</h1>
-    <button onclick="logout()" class="text-red-600">Logout</button>
-  </div>
+<!-- MAIN -->
+<div id="mainApp" class="max-w-6xl mx-auto px-4 hidden">
 
-  <!-- REKAP -->
-  <div class="grid grid-cols-4 gap-3 mb-4">
-    <div class="bg-white p-3 rounded shadow">IBC: <span id="ibcCount">0</span></div>
-    <div class="bg-white p-3 rounded shadow">DRUM: <span id="drumCount">0</span></div>
-    <div class="bg-white p-3 rounded shadow">JERIGEN: <span id="jerigenCount">0</span></div>
-    <div class="bg-white p-3 rounded shadow">ZAK: <span id="zakCount">0</span></div>
-  </div>
-
-  <!-- FORM -->
-  <form id="qcForm" class="bg-white p-4 rounded shadow space-y-3">
-    <input name="NAMA CUSTOMER" class="w-full border p-2" placeholder="Nama Customer" />
-    <input name="NAMA PRODUK" class="w-full border p-2" placeholder="Nama Produk" />
-    <input name="NO BATCH/LOT" class="w-full border p-2" placeholder="No Batch / Lot" />
-
-    <div class="grid grid-cols-4 gap-2">
-      <input name="IBC" type="number" class="border p-2" placeholder="IBC" />
-      <input name="DRUM" type="number" class="border p-2" placeholder="DRUM" />
-      <input name="JERIGEN" type="number" class="border p-2" placeholder="JERIGEN" />
-      <input name="ZAK" type="number" class="border p-2" placeholder="ZAK" />
+<div class="bg-orange-primary text-white p-6 rounded-t-lg">
+  <div class="flex justify-between">
+    <div>
+      <h1 class="text-2xl font-bold">Form Quality Control</h1>
+      <p>CV. Kurnia Jaya</p>
     </div>
-
-    <!-- CHECKLIST -->
-    <div class="grid grid-cols-4 gap-2">
-      <label><input type="checkbox" name="PACKING" value="OK"> Packing</label>
-      <label><input type="checkbox" name="LABEL" value="OK"> Label</label>
-      <label><input type="checkbox" name="CLEANING" value="OK"> Cleaning</label>
-      <label><input type="checkbox" name="SJ" value="OK"> SJ</label>
+    <div>
+      <span id="currentUser"></span>
+      <button onclick="logout()" class="ml-4 bg-orange-secondary px-3 py-2 rounded">Logout</button>
     </div>
+  </div>
+</div>
 
-    <input name="SAMPLING" class="w-full border p-2" placeholder="Sampling" />
-    <input name="PELAKSANA" class="w-full border p-2" placeholder="Pelaksana" />
+<div class="bg-white p-6 rounded-b-lg shadow">
+<form id="qcForm" class="space-y-6">
 
-    <button id="submitBtn" class="bg-primary text-white px-4 py-2">Kirim</button>
-  </form>
+<div class="grid md:grid-cols-3 gap-4">
+  <input type="date" name="tanggal" id="tanggal" class="p-3 border rounded">
+  <input type="text" name="namaCustomer" placeholder="Nama Customer" class="p-3 border rounded">
+  <input type="text" name="pelaksana" placeholder="Pelaksana" class="p-3 border rounded">
+</div>
+
+<div>
+<button type="button" id="addProduct" class="bg-orange-primary text-white px-4 py-2 rounded">+ Tambah Produk</button>
+<div id="productsContainer" class="mt-4"></div>
+</div>
+
+<div class="grid md:grid-cols-4 gap-4">
+<input readonly id="totalIbc" class="p-3 border bg-gray-100" placeholder="IBC">
+<input readonly id="totalDrum" class="p-3 border bg-gray-100" placeholder="DRUM">
+<input readonly id="totalJerigen" class="p-3 border bg-gray-100" placeholder="JERIGEN">
+<input readonly id="totalZak" class="p-3 border bg-gray-100" placeholder="ZAK">
+</div>
+
+<div class="grid md:grid-cols-4 gap-4">
+<label><input type="checkbox" name="packing" value="✓"> Packing</label>
+<label><input type="checkbox" name="label" value="✓"> Label</label>
+<label><input type="checkbox" name="cleaning" value="✓"> Cleaning</label>
+<label><input type="checkbox" name="sj" value="✓"> SJ</label>
+</div>
+
+<div class="flex justify-between">
+<input type="number" name="sampling" placeholder="Sampling" class="p-3 border rounded w-32">
+<button class="bg-orange-primary text-white px-6 py-3 rounded">Kirim</button>
+</div>
+
+</form>
+</div>
+
+<!-- REKAP -->
+<div class="mt-6 bg-white p-6 rounded shadow">
+<h3 class="font-bold mb-4">Rekap Hari Ini</h3>
+<div class="grid grid-cols-4 gap-4 text-center">
+<div><div id="ibcCount">0</div>IBC</div>
+<div><div id="drumCount">0</div>DRUM</div>
+<div><div id="jerigenCount">0</div>JERIGEN</div>
+<div><div id="zakCount">0</div>ZAK</div>
+</div>
+</div>
+
 </div>
 
 <script>
-const GAS_URL = "PASTE_URL_WEB_APP_KAMU";
+const GAS_URL = "https://script.google.com/macros/s/AKfycbzYJwYT3hocplI8NWiWwTzO_S_Fih_aeSQEsQNxFamzVEwivP4ovP-vM-gFdW_pR0QR/exec";
 
 const users = {
-  admin: { password: 'qc2024', name: 'Admin' },
-  operator1: { password: 'op123', name: 'Operator 1' },
-  operator2: { password: 'op456', name: 'Operator 2' }
+  admin:{password:'qc2024',name:'Admin'},
+  operator1:{password:'op123',name:'Operator 1'}
 };
 
-function logout(){ localStorage.clear(); location.reload(); }
-
-function showApp(user){
-  loginScreen.classList.add('hidden');
-  mainApp.classList.remove('hidden');
-  updateSummary();
-}
-
-document.getElementById('loginForm').onsubmit = e => {
+document.getElementById('loginForm').onsubmit = e=>{
   e.preventDefault();
-  const u = username.value;
-  const p = password.value;
-  if(users[u] && users[u].password === p){
-    localStorage.setItem('user', JSON.stringify(users[u]));
-    showApp(users[u]);
+  const u=username.value,p=password.value;
+  if(users[u]&&users[u].password===p){
+    localStorage.user=JSON.stringify({name:users[u].name});
+    loginScreen.classList.add('hidden');
+    mainApp.classList.remove('hidden');
+    currentUser.textContent=users[u].name;
+    loadSummary();
   } else loginError.classList.remove('hidden');
 };
 
-if(localStorage.getItem('user')) showApp(JSON.parse(localStorage.getItem('user')));
-
-document.getElementById('qcForm').onsubmit = async e => {
-  e.preventDefault();
-  submitBtn.disabled = true;
-  const fd = new FormData(e.target);
-  await fetch(GAS_URL, { method:'POST', body: fd });
-  e.target.reset();
-  submitBtn.disabled = false;
-  updateSummary();
-};
-
-async function updateSummary(){
-  const r = await fetch(GAS_URL);
-  const s = await r.json();
-  ibcCount.textContent = s.IBC;
-  drumCount.textContent = s.DRUM;
-  jerigenCount.textContent = s.JERIGEN;
-  zakCount.textContent = s.ZAK;
+function logout(){
+  localStorage.clear();
+  location.reload();
 }
+
+async function loadSummary(){
+  const r = await fetch(GAS_URL);
+  const d = await r.json();
+  ibcCount.textContent=d.IBC||0;
+  drumCount.textContent=d.DRUM||0;
+  jerigenCount.textContent=d.JERIGEN||0;
+  zakCount.textContent=d.ZAK||0;
+}
+
+loadSummary();
 </script>
+
 </body>
 </html>
+
+
