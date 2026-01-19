@@ -1,179 +1,164 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Form QC - CV. Kurnia Jaya</title>
-
-<script src="https://cdn.tailwindcss.com"></script>
-<script>
-tailwind.config = {
-  theme: {
-    extend: {
-      colors: {
-        'orange-primary': '#FF8C00',
-        'orange-secondary': '#FFA500'
-      }
-    }
-  }
-}
-</script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Form QC</title>
+  <script src="https://cdn.tailwindcss.com"></script>
 </head>
+<body class="bg-gradient-to-br from-gray-100 to-orange-50 min-h-screen">
 
-<body class="bg-gray-100 min-h-screen">
-
-<!-- ================= LOGIN ================= -->
+<!-- LOGIN -->
 <div id="loginScreen" class="flex items-center justify-center min-h-screen">
-  <form id="loginForm" class="bg-white p-6 rounded shadow w-80">
-    <h2 class="text-xl font-bold mb-4 text-center">Login QC</h2>
-
-    <input id="username" class="w-full border p-2 mb-2" placeholder="Username" required>
-    <input id="password" type="password" class="w-full border p-2 mb-2" placeholder="Password" required>
-
-    <p id="loginError" class="hidden text-red-600 text-sm mb-2">Login salah</p>
-
-    <button class="w-full bg-orange-primary text-white py-2 rounded">
-      Login
-    </button>
-  </form>
+  <div class="bg-white shadow-xl rounded-xl p-8 w-full max-w-md">
+    <h1 class="text-2xl font-bold text-center mb-2">Form QC</h1>
+    <p class="text-center text-gray-500 mb-6">CV. Kurnia Jaya</p>
+    <form id="loginForm" class="space-y-4">
+      <input id="username" class="w-full border rounded px-3 py-2" placeholder="Username" required />
+      <input id="password" type="password" class="w-full border rounded px-3 py-2" placeholder="Password" required />
+      <p id="loginError" class="text-red-500 text-sm hidden">Username atau password salah</p>
+      <button class="w-full bg-orange-500 text-white py-2 rounded font-semibold">Login</button>
+    </form>
+  </div>
 </div>
 
-<!-- ================= MAIN APP ================= -->
-<div id="mainApp" class="hidden p-6">
-  <div class="flex justify-between mb-4">
-    <h1 class="text-xl font-bold">Form QC</h1>
+<!-- APP -->
+<div id="mainApp" class="hidden p-6 max-w-6xl mx-auto">
+  <div class="flex justify-between items-center mb-6">
+    <h2 class="text-2xl font-bold">Form QC</h2>
     <div>
-      <span id="currentUser"></span>
-      <button onclick="logout()" class="ml-4 text-red-600">Logout</button>
+      <span id="currentUser" class="mr-4 text-gray-600"></span>
+      <button onclick="logout()" class="text-orange-600 font-semibold">Logout</button>
     </div>
   </div>
 
-  <form id="qcForm" class="bg-white p-4 rounded shadow space-y-2">
-    <input name="NAMA CUSTOMER" placeholder="Nama Customer" class="w-full border p-2" required>
-    <input name="NAMA PRODUK" placeholder="Nama Produk" class="w-full border p-2" required>
-    <input name="NO BATCH/LOT" placeholder="No Batch/Lot" class="w-full border p-2">
+  <form id="qcForm" class="grid grid-cols-1 md:grid-cols-3 gap-6">
+    <!-- FORM -->
+    <div class="md:col-span-2 bg-white rounded-xl shadow p-6">
+      <h3 class="font-semibold text-lg mb-4">Input Data QC</h3>
 
-    <input name="IBC" type="number" placeholder="IBC" class="w-full border p-2" value="0">
-    <input name="DRUM" type="number" placeholder="DRUM" class="w-full border p-2" value="0">
-    <input name="JERIGEN" type="number" placeholder="JERIGEN" class="w-full border p-2" value="0">
-    <input name="ZAK" type="number" placeholder="ZAK" class="w-full border p-2" value="0">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <input name="NAMA CUSTOMER" class="border rounded px-3 py-2" placeholder="Nama Customer" required />
+        <input name="NO BATCH/LOT" class="border rounded px-3 py-2" placeholder="No Batch / Lot" />
+      </div>
 
-    <input name="PACKING" placeholder="Packing" class="w-full border p-2">
-    <input name="LABEL" placeholder="Label" class="w-full border p-2">
-    <input name="CLEANING" placeholder="Cleaning" class="w-full border p-2">
-    <input name="SJ" placeholder="SJ" class="w-full border p-2">
-    <input name="SAMPLING" type="number" placeholder="Sampling" class="w-full border p-2" value="0">
-    <input name="PELAKSANA" placeholder="Pelaksana" class="w-full border p-2">
+      <!-- PRODUK -->
+      <div class="mt-6">
+        <div class="flex justify-between items-center mb-2">
+          <h4 class="font-semibold">Produk</h4>
+          <button type="button" onclick="addProduk()" class="text-orange-600 font-semibold">+ Tambah Produk</button>
+        </div>
+        <div id="produkContainer" class="space-y-3"></div>
+      </div>
 
-    <input id="tanggal" name="TANGGAL" type="date" class="w-full border p-2">
+      <!-- CHECKLIST -->
+      <div class="mt-6">
+        <h4 class="font-semibold mb-2">Checklist</h4>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-2">
+          <label class="flex items-center gap-2"><input type="checkbox" name="PACKING" value="OK" /> Packing</label>
+          <label class="flex items-center gap-2"><input type="checkbox" name="LABEL" value="OK" /> Label</label>
+          <label class="flex items-center gap-2"><input type="checkbox" name="CLEANING" value="OK" /> Cleaning</label>
+          <label class="flex items-center gap-2"><input type="checkbox" name="SJ" value="OK" /> SJ</label>
+          <label class="flex items-center gap-2"><input type="checkbox" name="SAMPLING" value="OK" /> Sampling</label>
+        </div>
+      </div>
 
-    <button id="submitBtn" class="bg-orange-secondary text-white w-full py-2 rounded">
-      Submit
-    </button>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
+        <input name="PELAKSANA" class="border rounded px-3 py-2" placeholder="Pelaksana" required />
+        <input type="date" name="TANGGAL" id="tanggal" class="border rounded px-3 py-2" />
+      </div>
+
+      <button id="submitBtn" class="mt-6 w-full bg-orange-500 text-white py-2 rounded font-semibold">Simpan</button>
+    </div>
+
+    <!-- REKAP -->
+    <div class="bg-white rounded-xl shadow p-6">
+      <h3 class="font-semibold text-lg mb-4">Rekap Hari Ini</h3>
+      <div class="space-y-3">
+        <div class="flex justify-between"><span>IBC</span><span id="ibcCount">0</span></div>
+        <div class="flex justify-between"><span>DRUM</span><span id="drumCount">0</span></div>
+        <div class="flex justify-between"><span>JERIGEN</span><span id="jerigenCount">0</span></div>
+        <div class="flex justify-between"><span>ZAK</span><span id="zakCount">0</span></div>
+      </div>
+    </div>
   </form>
-
-  <div class="mt-6 bg-white p-4 rounded shadow">
-    <h2 class="font-bold mb-2">Rekap Hari Ini</h2>
-    <p>IBC: <span id="ibcCount">0</span></p>
-    <p>DRUM: <span id="drumCount">0</span></p>
-    <p>JERIGEN: <span id="jerigenCount">0</span></p>
-    <p>ZAK: <span id="zakCount">0</span></p>
-  </div>
 </div>
 
 <script>
-/* ========== KONFIGURASI ========== */
-const GAS_URL = "https://script.google.com/macros/s/AKfycbwg6nZn4Hxv9ccc8p4U_lpwd6e53CGHDlzcKHyfMCpCXhfKPtY9hnpO38MKaSMGW8BA/exec";
+const GAS_URL = 'PASTE_URL_WEBAPP_ANDA_DI_SINI';
 
-/* ========== LOGIN DATA ========== */
 const validUsers = {
   admin: { password: 'qc2024', name: 'Admin' },
-  operator1: { password: 'op123', name: 'Operator 1' },
-  operator2: { password: 'op456', name: 'Operator 2' }
+  operator: { password: 'op123', name: 'Operator' }
 };
 
-/* ========== LOGIN LOGIC ========== */
-function checkLoginStatus() {
-  const user = localStorage.getItem("loggedInUser");
-  if (user) showMainApp(JSON.parse(user));
+function logout(){ localStorage.clear(); location.reload(); }
+
+function checkLoginStatus(){
+  const u = localStorage.getItem('user');
+  if(u) showMainApp(JSON.parse(u));
 }
 
-function showMainApp(user) {
-  loginScreen.classList.add("hidden");
-  mainApp.classList.remove("hidden");
+function showMainApp(user){
+  loginScreen.classList.add('hidden');
+  mainApp.classList.remove('hidden');
   currentUser.textContent = user.name;
   tanggal.valueAsDate = new Date();
   updateDailySummary();
 }
 
-function logout() {
-  localStorage.removeItem("loggedInUser");
-  location.reload();
+loginForm.onsubmit = e =>{
+  e.preventDefault();
+  const u = username.value;
+  const p = password.value;
+  if(validUsers[u] && validUsers[u].password === p){
+    localStorage.setItem('user', JSON.stringify(validUsers[u]));
+    showMainApp(validUsers[u]);
+  } else loginError.classList.remove('hidden');
+};
+
+function addProduk(){
+  const d = document.createElement('div');
+  d.className = 'grid grid-cols-4 gap-2';
+  d.innerHTML = `
+    <input name="NAMA PRODUK" class="border rounded px-2 py-1" placeholder="Nama Produk" required />
+    <select name="JENIS" class="border rounded px-2 py-1">
+      <option>IBC</option><option>DRUM</option><option>JERIGEN</option><option>ZAK</option>
+    </select>
+    <input name="JUMLAH" type="number" min="0" class="border rounded px-2 py-1" placeholder="Jumlah" />
+    <button type="button" onclick="this.parentElement.remove()" class="text-red-500">✕</button>`;
+  produkContainer.appendChild(d);
 }
 
-/* ========== REKAP HARIAN ========== */
-async function updateDailySummary() {
-  try {
-    const r = await fetch(GAS_URL);
-    const s = await r.json();
-    ibcCount.textContent = s.IBC || 0;
-    drumCount.textContent = s.DRUM || 0;
-    jerigenCount.textContent = s.JERIGEN || 0;
-    zakCount.textContent = s.ZAK || 0;
-  } catch (e) {
-    console.error(e);
-  }
+qcForm.onsubmit = async e =>{
+  e.preventDefault();
+  submitBtn.disabled = true;
+
+  const fd = new FormData(qcForm);
+  await fetch(GAS_URL, { method:'POST', body: fd });
+
+  alert('Data tersimpan');
+  qcForm.reset();
+  produkContainer.innerHTML='';
+  tanggal.valueAsDate = new Date();
+  submitBtn.disabled=false;
+  updateDailySummary();
+};
+
+async function updateDailySummary(){
+  const r = await fetch(GAS_URL);
+  const s = await r.json();
+  ibcCount.textContent = s.IBC||0;
+  drumCount.textContent = s.DRUM||0;
+  jerigenCount.textContent = s.JERIGEN||0;
+  zakCount.textContent = s.ZAK||0;
 }
 
-/* ========== EVENT ========== */
-document.addEventListener("DOMContentLoaded", () => {
-
-  checkLoginStatus();
-
-  loginForm.addEventListener("submit", e => {
-    e.preventDefault();
-    const u = username.value;
-    const p = password.value;
-
-    if (validUsers[u] && validUsers[u].password === p) {
-      localStorage.setItem("loggedInUser", JSON.stringify({
-        username: u,
-        name: validUsers[u].name
-      }));
-      showMainApp({ name: validUsers[u].name });
-    } else {
-      loginError.classList.remove("hidden");
-    }
-  });
-
-  qcForm.addEventListener("submit", async e => {
-    e.preventDefault();
-
-    submitBtn.disabled = true;
-    submitBtn.textContent = "Mengirim...";
-
-    try {
-      await fetch(GAS_URL, {
-        method: "POST",
-        body: new FormData(qcForm)
-      });
-
-      alert("Data tersimpan");
-      qcForm.reset();
-      tanggal.valueAsDate = new Date();
-      updateDailySummary();
-
-    } catch (err) {
-      alert("Gagal kirim data");
-      console.error(err);
-    }
-
-    submitBtn.disabled = false;
-    submitBtn.textContent = "Submit";
-  });
-
-});
+checkLoginStatus();
 </script>
+</body>
+</html>
 
 </body>
 </html>
+
