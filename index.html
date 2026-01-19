@@ -5,160 +5,123 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Form QC</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: '#FF8C00'
+          }
+        }
+      }
+    }
+  </script>
 </head>
-<body class="bg-gradient-to-br from-gray-100 to-orange-50 min-h-screen">
+<body class="bg-gray-100 min-h-screen">
 
 <!-- LOGIN -->
 <div id="loginScreen" class="flex items-center justify-center min-h-screen">
-  <div class="bg-white shadow-xl rounded-xl p-8 w-full max-w-md">
-    <h1 class="text-2xl font-bold text-center mb-2">Form QC</h1>
-    <p class="text-center text-gray-500 mb-6">CV. Kurnia Jaya</p>
-    <form id="loginForm" class="space-y-4">
-      <input id="username" class="w-full border rounded px-3 py-2" placeholder="Username" required />
-      <input id="password" type="password" class="w-full border rounded px-3 py-2" placeholder="Password" required />
-      <p id="loginError" class="text-red-500 text-sm hidden">Username atau password salah</p>
-      <button class="w-full bg-orange-500 text-white py-2 rounded font-semibold">Login</button>
+  <div class="bg-white p-6 rounded shadow w-80">
+    <h2 class="text-xl font-bold text-center mb-4">Login</h2>
+    <form id="loginForm" class="space-y-3">
+      <input id="username" class="w-full border p-2" placeholder="Username" />
+      <input id="password" type="password" class="w-full border p-2" placeholder="Password" />
+      <p id="loginError" class="text-red-500 hidden">Login gagal</p>
+      <button class="w-full bg-primary text-white py-2">Masuk</button>
     </form>
   </div>
 </div>
 
 <!-- APP -->
-<div id="mainApp" class="hidden p-6 max-w-6xl mx-auto">
-  <div class="flex justify-between items-center mb-6">
-    <h2 class="text-2xl font-bold">Form QC</h2>
-    <div>
-      <span id="currentUser" class="mr-4 text-gray-600"></span>
-      <button onclick="logout()" class="text-orange-600 font-semibold">Logout</button>
-    </div>
+<div id="mainApp" class="hidden p-6 max-w-4xl mx-auto">
+  <div class="flex justify-between items-center mb-4">
+    <h1 class="text-2xl font-bold">Form QC</h1>
+    <button onclick="logout()" class="text-red-600">Logout</button>
   </div>
 
-  <form id="qcForm" class="grid grid-cols-1 md:grid-cols-3 gap-6">
-    <!-- FORM -->
-    <div class="md:col-span-2 bg-white rounded-xl shadow p-6">
-      <h3 class="font-semibold text-lg mb-4">Input Data QC</h3>
+  <!-- REKAP -->
+  <div class="grid grid-cols-4 gap-3 mb-4">
+    <div class="bg-white p-3 rounded shadow">IBC: <span id="ibcCount">0</span></div>
+    <div class="bg-white p-3 rounded shadow">DRUM: <span id="drumCount">0</span></div>
+    <div class="bg-white p-3 rounded shadow">JERIGEN: <span id="jerigenCount">0</span></div>
+    <div class="bg-white p-3 rounded shadow">ZAK: <span id="zakCount">0</span></div>
+  </div>
 
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <input name="NAMA CUSTOMER" class="border rounded px-3 py-2" placeholder="Nama Customer" required />
-        <input name="NO BATCH/LOT" class="border rounded px-3 py-2" placeholder="No Batch / Lot" />
-      </div>
+  <!-- FORM -->
+  <form id="qcForm" class="bg-white p-4 rounded shadow space-y-3">
+    <input name="NAMA CUSTOMER" class="w-full border p-2" placeholder="Nama Customer" />
+    <input name="NAMA PRODUK" class="w-full border p-2" placeholder="Nama Produk" />
+    <input name="NO BATCH/LOT" class="w-full border p-2" placeholder="No Batch / Lot" />
 
-      <!-- PRODUK -->
-      <div class="mt-6">
-        <div class="flex justify-between items-center mb-2">
-          <h4 class="font-semibold">Produk</h4>
-          <button type="button" onclick="addProduk()" class="text-orange-600 font-semibold">+ Tambah Produk</button>
-        </div>
-        <div id="produkContainer" class="space-y-3"></div>
-      </div>
-
-      <!-- CHECKLIST -->
-      <div class="mt-6">
-        <h4 class="font-semibold mb-2">Checklist</h4>
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-2">
-          <label class="flex items-center gap-2"><input type="checkbox" name="PACKING" value="OK" /> Packing</label>
-          <label class="flex items-center gap-2"><input type="checkbox" name="LABEL" value="OK" /> Label</label>
-          <label class="flex items-center gap-2"><input type="checkbox" name="CLEANING" value="OK" /> Cleaning</label>
-          <label class="flex items-center gap-2"><input type="checkbox" name="SJ" value="OK" /> SJ</label>
-          <label class="flex items-center gap-2"><input type="checkbox" name="SAMPLING" value="OK" /> Sampling</label>
-        </div>
-      </div>
-
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
-        <input name="PELAKSANA" class="border rounded px-3 py-2" placeholder="Pelaksana" required />
-        <input type="date" name="TANGGAL" id="tanggal" class="border rounded px-3 py-2" />
-      </div>
-
-      <button id="submitBtn" class="mt-6 w-full bg-orange-500 text-white py-2 rounded font-semibold">Simpan</button>
+    <div class="grid grid-cols-4 gap-2">
+      <input name="IBC" type="number" class="border p-2" placeholder="IBC" />
+      <input name="DRUM" type="number" class="border p-2" placeholder="DRUM" />
+      <input name="JERIGEN" type="number" class="border p-2" placeholder="JERIGEN" />
+      <input name="ZAK" type="number" class="border p-2" placeholder="ZAK" />
     </div>
 
-    <!-- REKAP -->
-    <div class="bg-white rounded-xl shadow p-6">
-      <h3 class="font-semibold text-lg mb-4">Rekap Hari Ini</h3>
-      <div class="space-y-3">
-        <div class="flex justify-between"><span>IBC</span><span id="ibcCount">0</span></div>
-        <div class="flex justify-between"><span>DRUM</span><span id="drumCount">0</span></div>
-        <div class="flex justify-between"><span>JERIGEN</span><span id="jerigenCount">0</span></div>
-        <div class="flex justify-between"><span>ZAK</span><span id="zakCount">0</span></div>
-      </div>
+    <!-- CHECKLIST -->
+    <div class="grid grid-cols-4 gap-2">
+      <label><input type="checkbox" name="PACKING" value="OK"> Packing</label>
+      <label><input type="checkbox" name="LABEL" value="OK"> Label</label>
+      <label><input type="checkbox" name="CLEANING" value="OK"> Cleaning</label>
+      <label><input type="checkbox" name="SJ" value="OK"> SJ</label>
     </div>
+
+    <input name="SAMPLING" class="w-full border p-2" placeholder="Sampling" />
+    <input name="PELAKSANA" class="w-full border p-2" placeholder="Pelaksana" />
+
+    <button id="submitBtn" class="bg-primary text-white px-4 py-2">Kirim</button>
   </form>
 </div>
 
 <script>
-const GAS_URL = 'PASTE_URL_WEBAPP_ANDA_DI_SINI';
+const GAS_URL = "PASTE_URL_WEB_APP_KAMU";
 
-const validUsers = {
+const users = {
   admin: { password: 'qc2024', name: 'Admin' },
-  operator: { password: 'op123', name: 'Operator' }
+  operator1: { password: 'op123', name: 'Operator 1' },
+  operator2: { password: 'op456', name: 'Operator 2' }
 };
 
 function logout(){ localStorage.clear(); location.reload(); }
 
-function checkLoginStatus(){
-  const u = localStorage.getItem('user');
-  if(u) showMainApp(JSON.parse(u));
-}
-
-function showMainApp(user){
+function showApp(user){
   loginScreen.classList.add('hidden');
   mainApp.classList.remove('hidden');
-  currentUser.textContent = user.name;
-  tanggal.valueAsDate = new Date();
-  updateDailySummary();
+  updateSummary();
 }
 
-loginForm.onsubmit = e =>{
+document.getElementById('loginForm').onsubmit = e => {
   e.preventDefault();
   const u = username.value;
   const p = password.value;
-  if(validUsers[u] && validUsers[u].password === p){
-    localStorage.setItem('user', JSON.stringify(validUsers[u]));
-    showMainApp(validUsers[u]);
+  if(users[u] && users[u].password === p){
+    localStorage.setItem('user', JSON.stringify(users[u]));
+    showApp(users[u]);
   } else loginError.classList.remove('hidden');
 };
 
-function addProduk(){
-  const d = document.createElement('div');
-  d.className = 'grid grid-cols-4 gap-2';
-  d.innerHTML = `
-    <input name="NAMA PRODUK" class="border rounded px-2 py-1" placeholder="Nama Produk" required />
-    <select name="JENIS" class="border rounded px-2 py-1">
-      <option>IBC</option><option>DRUM</option><option>JERIGEN</option><option>ZAK</option>
-    </select>
-    <input name="JUMLAH" type="number" min="0" class="border rounded px-2 py-1" placeholder="Jumlah" />
-    <button type="button" onclick="this.parentElement.remove()" class="text-red-500">✕</button>`;
-  produkContainer.appendChild(d);
-}
+if(localStorage.getItem('user')) showApp(JSON.parse(localStorage.getItem('user')));
 
-qcForm.onsubmit = async e =>{
+document.getElementById('qcForm').onsubmit = async e => {
   e.preventDefault();
   submitBtn.disabled = true;
-
-  const fd = new FormData(qcForm);
+  const fd = new FormData(e.target);
   await fetch(GAS_URL, { method:'POST', body: fd });
-
-  alert('Data tersimpan');
-  qcForm.reset();
-  produkContainer.innerHTML='';
-  tanggal.valueAsDate = new Date();
-  submitBtn.disabled=false;
-  updateDailySummary();
+  e.target.reset();
+  submitBtn.disabled = false;
+  updateSummary();
 };
 
-async function updateDailySummary(){
+async function updateSummary(){
   const r = await fetch(GAS_URL);
   const s = await r.json();
-  ibcCount.textContent = s.IBC||0;
-  drumCount.textContent = s.DRUM||0;
-  jerigenCount.textContent = s.JERIGEN||0;
-  zakCount.textContent = s.ZAK||0;
+  ibcCount.textContent = s.IBC;
+  drumCount.textContent = s.DRUM;
+  jerigenCount.textContent = s.JERIGEN;
+  zakCount.textContent = s.ZAK;
 }
-
-checkLoginStatus();
 </script>
 </body>
 </html>
-
-</body>
-</html>
-
