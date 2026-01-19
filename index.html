@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Form QC - CV. Kurnia Jaya</title>
+
 <script src="https://cdn.tailwindcss.com"></script>
 <script>
 tailwind.config = {
@@ -11,8 +12,7 @@ tailwind.config = {
     extend: {
       colors: {
         'orange-primary': '#FF8C00',
-        'orange-secondary': '#FFA500',
-        'orange-light': '#FFE4B5'
+        'orange-secondary': '#FFA500'
       }
     }
   }
@@ -20,124 +20,160 @@ tailwind.config = {
 </script>
 </head>
 
-<body class="bg-gray-50 min-h-screen py-8">
+<body class="bg-gray-100 min-h-screen">
+
+<!-- ================= LOGIN ================= -->
+<div id="loginScreen" class="flex items-center justify-center min-h-screen">
+  <form id="loginForm" class="bg-white p-6 rounded shadow w-80">
+    <h2 class="text-xl font-bold mb-4 text-center">Login QC</h2>
+
+    <input id="username" class="w-full border p-2 mb-2" placeholder="Username" required>
+    <input id="password" type="password" class="w-full border p-2 mb-2" placeholder="Password" required>
+
+    <p id="loginError" class="hidden text-red-600 text-sm mb-2">Login salah</p>
+
+    <button class="w-full bg-orange-primary text-white py-2 rounded">
+      Login
+    </button>
+  </form>
+</div>
+
+<!-- ================= MAIN APP ================= -->
+<div id="mainApp" class="hidden p-6">
+  <div class="flex justify-between mb-4">
+    <h1 class="text-xl font-bold">Form QC</h1>
+    <div>
+      <span id="currentUser"></span>
+      <button onclick="logout()" class="ml-4 text-red-600">Logout</button>
+    </div>
+  </div>
+
+  <form id="qcForm" class="bg-white p-4 rounded shadow space-y-2">
+    <input name="NAMA CUSTOMER" placeholder="Nama Customer" class="w-full border p-2" required>
+    <input name="NAMA PRODUK" placeholder="Nama Produk" class="w-full border p-2" required>
+    <input name="NO BATCH/LOT" placeholder="No Batch/Lot" class="w-full border p-2">
+
+    <input name="IBC" type="number" placeholder="IBC" class="w-full border p-2" value="0">
+    <input name="DRUM" type="number" placeholder="DRUM" class="w-full border p-2" value="0">
+    <input name="JERIGEN" type="number" placeholder="JERIGEN" class="w-full border p-2" value="0">
+    <input name="ZAK" type="number" placeholder="ZAK" class="w-full border p-2" value="0">
+
+    <input name="PACKING" placeholder="Packing" class="w-full border p-2">
+    <input name="LABEL" placeholder="Label" class="w-full border p-2">
+    <input name="CLEANING" placeholder="Cleaning" class="w-full border p-2">
+    <input name="SJ" placeholder="SJ" class="w-full border p-2">
+    <input name="SAMPLING" type="number" placeholder="Sampling" class="w-full border p-2" value="0">
+    <input name="PELAKSANA" placeholder="Pelaksana" class="w-full border p-2">
+
+    <input id="tanggal" name="TANGGAL" type="date" class="w-full border p-2">
+
+    <button id="submitBtn" class="bg-orange-secondary text-white w-full py-2 rounded">
+      Submit
+    </button>
+  </form>
+
+  <div class="mt-6 bg-white p-4 rounded shadow">
+    <h2 class="font-bold mb-2">Rekap Hari Ini</h2>
+    <p>IBC: <span id="ibcCount">0</span></p>
+    <p>DRUM: <span id="drumCount">0</span></p>
+    <p>JERIGEN: <span id="jerigenCount">0</span></p>
+    <p>ZAK: <span id="zakCount">0</span></p>
+  </div>
+</div>
 
 <script>
-/* =======================
-   KONFIGURASI GLOBAL
-======================= */
+/* ========== KONFIGURASI ========== */
 const GAS_URL = "https://script.google.com/macros/s/AKfycbwg6nZn4Hxv9ccc8p4U_lpwd6e53CGHDlzcKHyfMCpCXhfKPtY9hnpO38MKaSMGW8BA/exec";
 
-/* =======================
-   LOGIN SYSTEM
-======================= */
+/* ========== LOGIN DATA ========== */
 const validUsers = {
   admin: { password: 'qc2024', name: 'Admin' },
   operator1: { password: 'op123', name: 'Operator 1' },
-  operator2: { password: 'op456', name: 'Operator 2' },
-  operator3: { password: 'op789', name: 'Operator 3' },
-  supervisor: { password: 'sv456', name: 'Supervisor' }
+  operator2: { password: 'op456', name: 'Operator 2' }
 };
 
+/* ========== LOGIN LOGIC ========== */
 function checkLoginStatus() {
-  const user = localStorage.getItem('loggedInUser');
+  const user = localStorage.getItem("loggedInUser");
   if (user) showMainApp(JSON.parse(user));
 }
 
 function showMainApp(user) {
-  document.getElementById('loginScreen').style.display = 'none';
-  document.getElementById('mainApp').style.display = 'block';
-  document.getElementById('currentUser').textContent = user.name;
-  initializeApp();
-}
-
-function logout() {
-  localStorage.removeItem('loggedInUser');
-  location.reload();
-}
-
-/* =======================
-   INIT APP
-======================= */
-function initializeApp() {
-  document.getElementById('tanggal').valueAsDate = new Date();
-  updateTotals();
+  loginScreen.classList.add("hidden");
+  mainApp.classList.remove("hidden");
+  currentUser.textContent = user.name;
+  tanggal.valueAsDate = new Date();
   updateDailySummary();
 }
 
-/* =======================
-   TOTAL KEMASAN
-======================= */
-function updateTotals() {
-  const jenis = document.querySelectorAll('select[name="jenisKemasan[]"]');
-  const jumlah = document.querySelectorAll('input[name="jumlahSpesifik[]"]');
-
-  let t = { IBC:0, DRUM:0, JERIGEN:0, ZAK:0 };
-
-  jenis.forEach((j,i)=>{
-    const k = j.value;
-    const n = parseInt(jumlah[i].value) || 0;
-    if (t[k] !== undefined) t[k] += n;
-  });
-
-  totalIbc.value = t.IBC;
-  totalDrum.value = t.DRUM;
-  totalJerigen.value = t.JERIGEN;
-  totalZak.value = t.ZAK;
+function logout() {
+  localStorage.removeItem("loggedInUser");
+  location.reload();
 }
 
-/* =======================
-   REKAP HARIAN (SERVER)
-======================= */
+/* ========== REKAP HARIAN ========== */
 async function updateDailySummary() {
   try {
     const r = await fetch(GAS_URL);
     const s = await r.json();
-
     ibcCount.textContent = s.IBC || 0;
     drumCount.textContent = s.DRUM || 0;
     jerigenCount.textContent = s.JERIGEN || 0;
     zakCount.textContent = s.ZAK || 0;
   } catch (e) {
-    console.error("Rekap gagal", e);
+    console.error(e);
   }
 }
 
-/* =======================
-   SUBMIT FORM
-======================= */
-document.addEventListener('DOMContentLoaded', ()=>{
-checkLoginStatus();
+/* ========== EVENT ========== */
+document.addEventListener("DOMContentLoaded", () => {
 
-document.getElementById('loginForm').addEventListener('submit', e=>{
-  e.preventDefault();
-  const u = username.value;
-  const p = password.value;
+  checkLoginStatus();
 
-  if (validUsers[u] && validUsers[u].password === p) {
-    localStorage.setItem('loggedInUser', JSON.stringify({
-      username:u, name:validUsers[u].name
-    }));
-    showMainApp({name:validUsers[u].name});
-  } else {
-    loginError.classList.remove('hidden');
-  }
+  loginForm.addEventListener("submit", e => {
+    e.preventDefault();
+    const u = username.value;
+    const p = password.value;
+
+    if (validUsers[u] && validUsers[u].password === p) {
+      localStorage.setItem("loggedInUser", JSON.stringify({
+        username: u,
+        name: validUsers[u].name
+      }));
+      showMainApp({ name: validUsers[u].name });
+    } else {
+      loginError.classList.remove("hidden");
+    }
+  });
+
+  qcForm.addEventListener("submit", async e => {
+    e.preventDefault();
+
+    submitBtn.disabled = true;
+    submitBtn.textContent = "Mengirim...";
+
+    try {
+      await fetch(GAS_URL, {
+        method: "POST",
+        body: new FormData(qcForm)
+      });
+
+      alert("Data tersimpan");
+      qcForm.reset();
+      tanggal.valueAsDate = new Date();
+      updateDailySummary();
+
+    } catch (err) {
+      alert("Gagal kirim data");
+      console.error(err);
+    }
+
+    submitBtn.disabled = false;
+    submitBtn.textContent = "Submit";
+  });
+
 });
+</script>
 
-document.getElementById('qcForm').addEventListener('submit', async e=>{
-  e.preventDefault();
-  submitBtn.disabled = true;
-  submitBtn.textContent = "Mengirim...";
-
-  try {
-    const fd = new FormData(e.target);
-    const namaProduk = fd.getAll
-
-
-
-
-
-
-
-
-
+</body>
+</html>
