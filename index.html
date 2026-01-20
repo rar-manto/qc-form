@@ -519,8 +519,7 @@
         dataToSend.append('SAMPLING', formData.get('sampling') || '0');
         dataToSend.append('PELAKSANA', formData.get('pelaksana') || '');
         dataToSend.append('TANGGAL', formData.get('tanggal') || '');
-        dataToSend.append('USER_LOGIN', loggedInUser ? loggedInUser.name : 'Unknown');
-
+       
         await fetch('https://script.google.com/macros/s/AKfycbzYJwYT3hocplI8NWiWwTzO_S_Fih_aeSQEsQNxFamzVEwivP4ovP-vM-gFdW_pR0QR/exec', {
           method: 'POST',
           mode: 'no-cors',
@@ -580,6 +579,7 @@
 
 </body>
 </html>
+
 
 
 
