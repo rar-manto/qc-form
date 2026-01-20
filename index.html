@@ -503,7 +503,7 @@
         const kemasan = jenisKemasanArray[i];
         const jumlah = parseInt(jumlahSpesifikArray[i]) || 0;
         const dataToSend = new URLSearchParams();
-        dataToSend.append('NAMA COSTUMER', formData.get('namaCostumer') || '');
+        dataToSend.append('NAMA CUSTOMER', formData.get('namaCostumer') || '');
         dataToSend.append('NAMA PRODUK', namaProdukArray[i] || '');
         dataToSend.append('NO BATCH/LOT', noBatchArray[i] || '');
         dataToSend.append('JENIS KEMASAN', kemasan || '');
@@ -580,6 +580,7 @@
 
 </body>
 </html>
+
 
 
 
