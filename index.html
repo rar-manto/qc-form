@@ -417,23 +417,26 @@
     updateDailySummary();
   }
 
-  // Update totals automatically
-  function updateTotals() {
-    const jenisKemasanInputs = document.querySelectorAll('select[name="jenisKemasan[]"]');
-    const jumlahInputs = document.querySelectorAll('input[name="jumlahSpesifik[]"]');
-    const totals = { IBC: 0, DRUM: 0, JERIGEN: 0, ZAK: 0 };
-    for (let i = 0; i < jenisKemasanInputs.length; i++) {
-      const kemasan = jenisKemasanInputs[i].value;
-      const jumlah = parseInt(jumlahInputs[i].value) || 0;
-      if (kemasan && totals.hasOwnProperty(kemasan)) {
-        totals[kemasan] += jumlah;
-      }
+ function updateTotals() {
+  const jenisKemasanInputs = document.querySelectorAll('select[name="jenisKemasan[]"]');
+  const jumlahInputs = document.querySelectorAll('input[name="jumlahSpesifik[]"]');
+
+  const totals = { IBC: 0, DRUM: 0, JERIGEN: 0, ZAK: 0 };
+
+  jenisKemasanInputs.forEach((select, index) => {
+    const kemasan = select.value.toUpperCase();
+    const jumlah = parseInt(jumlahInputs[index]?.value) || 0;
+
+    if (totals[kemasan] !== undefined) {
+      totals[kemasan] += jumlah;
     }
-    document.getElementById('totalIbc').value = totals.IBC;
-    document.getElementById('totalDrum').value = totals.DRUM;
-    document.getElementById('totalJerigen').value = totals.JERIGEN;
-    document.getElementById('totalZak').value = totals.ZAK;
-  }
+  });
+
+  document.getElementById('totalIbc').value = totals.IBC;
+  document.getElementById('totalDrum').value = totals.DRUM;
+  document.getElementById('totalJerigen').value = totals.JERIGEN;
+  document.getElementById('totalZak').value = totals.ZAK;
+}
 
   // Add product functionality
   document.getElementById('addProduct').addEventListener('click', function() {
@@ -476,10 +479,10 @@
       summary = { date: today, IBC: 0, DRUM: 0, JERIGEN: 0, ZAK: 0 };
       localStorage.setItem('dailySummary', JSON.stringify(summary));
     }
-    document.getElementById('ibcCount').textContent = summary.IBC || 0;
-    document.getElementById('drumCount').textContent = summary.DRUM || 0;
-    document.getElementById('jerigenCount').textContent = summary.JERIGEN || 0;
-    document.getElementById('zakCount').textContent = summary.ZAK || 0;
+    document.getElementById('IBC').textContent = summary.IBC || 0;
+    document.getElementById('DRUM').textContent = summary.DRUM || 0;
+    document.getElementById('JERIGEN').textContent = summary.JERIGEN || 0;
+    document.getElementById('ZAK').textContent = summary.ZAK || 0;
   }
 
   // Form submission
@@ -579,6 +582,7 @@
 
 </body>
 </html>
+
 
 
 
